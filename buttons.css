@@ -1,0 +1,35 @@
+.button {
+  border: none;
+  color: white;
+  padding: 2% 2%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 2% 2%;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.buy {
+  background-color: white;
+  color: black;
+  font-size: 30px;
+  border: 2px solid #4CAF50;
+}
+
+.buy:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.makemoney {
+  font-size: 100px;
+  background-color: white;
+  color: black;
+  border: 2px solid #008CBA;
+}
+
+.makemoney:hover {
+  background-color: #008CBA;
+  color: white;
+}
