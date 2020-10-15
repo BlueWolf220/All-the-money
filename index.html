@@ -1,85 +1,128 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link rel="icon" href="open-source.svg">
-		<link rel="stylesheet" href="buttons.css">
-		<style>
-			body {
-				font-family: 'Pacifico', cursive;
-				background-color: #2a2a2a;
-			}
-			h1 {
-				color: white;
-			}
-			p {
-				color: white;
-			}
-		</style>
-		<script>
-			balance = 0;
-			mps = 0;
-			mpc = 1;
-			mpcprice = 1;
-			mpsprice = 10;
-			function buy(price) {
-				if (price > balance) {
-					alert("not enough money!");
-					check = false;
-				}
-				else {
-					oldbalance = balance;
-					balance = oldbalance - price;
-					update();
-					check = true;
-				}
-			}
-			function update() {
-  	        document.getElementById("money").innerHTML = balance;
-  	        document.getElementById("mpcprice").innerHTML = mpcprice;
-  	        document.getElementById("mpsprice").innerHTML = mpsprice;
-            }
-  	  function makeMoney(){
-  	 	        oldbalance = balance;
-  	 	        balance = oldbalance + mpc;
-  	 	        update();
-  	        }
-  	  function upgradeMPC() {
-  	  	oldprice = mpcprice;
+  <head>
+    <title>MapleArcade | All The Money!</title>
+    <link
+      rel="icon"
+      href="open-source.svg"
+    />
+    <link rel="stylesheet" href="buttons.css" />
+    <style>
+      body {
+        font-family: "Pacifico", cursive;
+        background-color: #2a2a2a;
+      }
+      h1 {
+        color: white;
+      }
+      p {
+        color: white;
+      }
+    </style>
+    <script>
+      balance = 0;
+      mps = 0;
+      mpc = 1;
+      mpcprice = 1;
+      mpsprice = 10;
+      rebirthcost = 1000000;
+      rebirthcount = 0;
+      multiplier = 1;
+      function buy(price) {
+        if (price > balance) {
+          alert("You do not have enough money for this!");
+          check = false;
+        } else {
+          oldbalance = balance;
+          balance = oldbalance - price;
+          update();
+          check = true;
+        }
+      }
+      function update() {
+        document.getElementById("money").innerHTML = balance;
+        document.getElementById("mpcprice").innerHTML = mpcprice;
+        document.getElementById("mpsprice").innerHTML = mpsprice;
+        document.getElementById("rebirthcost").innerHTML = rebirthcost;
+      }
+      function makeMoney() {
+        oldbalance = balance;
+        balance = oldbalance + mpc;
+        update();
+      }
+      function upgradeMPC() {
+        oldprice = mpcprice;
         buy(oldprice);
-  	  	if (check == true) {
-        	oldAmt = mpc;
- 	   			mpcprice = oldprice + 7;
-  	 			mpc = oldAmt + 1;
-  	 			update();
-  	  	}
-  		}
-  		function upgradeMPS() {
-  			oldprice = mpsprice;
-  			buy(oldprice);
-  			if (check == true) {
-  				oldAmt = mps;
-  				mpsprice = oldprice + 10;
-  				mps = oldAmt + 1;
-  				update();
-  			}
-  		}
-			setInterval(function() {
-			  balance = balance + mps;
-			  update();
-			}, 1000);
-		</script>
-		<title>All The Money!</title>
-	  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-	</head>
-	<body onload="update()">
-		<center>
-			<h1>All The Money!</h1>
-			<h1>you have: $<span id="money"></span></h1>
-			<button class="button, makemoney" onclick="makeMoney()">Make Money!</button>
-			<br>
-			<button class="button, buy" onclick="upgradeMPS()">upgrade money per second: $<span id="mpsprice"></span></button>
-			<button class="button, buy" onclick="upgradeMPC()">upgrade money per click: $<span id="mpcprice"></span></button>
-			
-		</center>
-	</body>
+        if (check == true) {
+          oldAmt = mpc;
+          mpcprice = oldprice + 10 * (multiplier * 0.5);
+          mpc = oldAmt + (1 * multiplier);
+          update();
+        }
+      }
+      function upgradeMPS() {
+        oldprice = mpsprice;
+        buy(oldprice);
+        if (check == true) {
+          oldAmt = mps;
+          mpsprice = oldprice + 10 * (multiplier * 0.5);
+          mps = oldAmt + (1 * multiplier);
+          update();
+        }
+      }
+      function rebirth() {
+        oldprice = rebirthcost;
+        buy(oldprice);
+        if (check == true) {
+          oldAmt = rebirthcount;
+          rebirthcost = oldprice + 500000;
+          rebirthcount = oldAmt + 1;
+          multiplier = multiplier + 1;
+          mpcprice = 1;
+          mpsprice = 10;
+          mps = 0;
+          mpc = 1;
+          balance = 0;
+          update();
+        }
+      }
+      function save() {
+        //for future infrastructure
+      }
+      function loadsave() {
+        //for future infrastructure
+      }
+      setInterval(function() {
+        balance = balance + mps;
+        update();
+      }, 1000);
+    </script>
+    <title>All The Money!</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body onload="update()">
+    <center>
+      <h1>All The Money!</h1>
+      <h1>you have: $<span id="money"></span></h1>
+      <button class="button, makemoney" onclick="makeMoney()">
+        Make Money!
+      </button>
+      <br />
+      <br />
+      <button class="button, buy" onclick="upgradeMPS()">
+        Upgrade money per second: $<span id="mpsprice"></span>
+      </button>
+      <button class="button, buy" onclick="upgradeMPC()">
+        Upgrade money per click: $<span id="mpcprice"></span>
+      </button>
+      <br />
+      <br />
+      <button class="button, buy" onclick="rebirth()">
+        Rebirth: $<span id="rebirthcost"></span>
+      </button>
+    </center>
+  </body>
 </html>
