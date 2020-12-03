@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MapleArcade | All The Money!</title>
+    <link
+      rel="icon"
+      href="https://cdn.glitch.com/8bf7e2fa-94cd-4338-b433-c7719701d567%2Ffavicon.ico?v=1601555174011"
+    />
+    <link rel="stylesheet" href="buttons.css" />
+    <link rel="stylesheet" href="/game/style/menu.css" />
+    <style>
+      body {
+        font-family: "Pacifico", cursive;
+        background-color: #2a2a2a;
+      }
+      h1 {
+        color: white;
+      }
+      p {
+        color: white;
+      }
+    </style>
+    <script>
+      //script head
+      hiddenupgrade = "Hidden Upgrade";
+      hiddenupgradeNum = 0;
+      balance = 0;
+      tick = 1000;
+      mps = 0;
+      mpc = 1;
+      mpcprice = 1;
+      mpsprice = 10;
+      rebirthcost = 1000000;
+      hiddencost = 10000;
+      rebirthcount = 0;
+      tmp = 10000;
+      multiplier = 1;
+      function buy(price) {
+        if (price > balance) {
+          alert("You do not have enough money for this!");
+          check = false;
+        } else {
+          oldbalance = balance;
+          balance = oldbalance - price;
+          update();
+          check = true;
+        }
+      }
+      function loadup() {
+        loadsave();
+        update();
+        var interval = setInterval(mpsmoney, tick);
+      }
+      function update() {
+        if (balance >= 10000000) {
+          hiddenupgrade = ["Buy A Time Machine: $", tmp].join("");
+        }
+        if (balance < 10000000) {
+          hiddenupgrade = "Hidden Upgrade";
+        }
+        document.getElementById("money").innerHTML = balance;
+        document.getElementById("mpcprice").innerHTML = mpcprice;
+        document.getElementById("mpsprice").innerHTML = mpsprice;
+        document.getElementById("rebirthcost").innerHTML = rebirthcost;
+        document.getElementById("hiddenupgrade").innerHTML = hiddenupgrade;
+      }
+      function makeMoney() {
+        oldbalance = balance;
+        balance = oldbalance + mpc;
+        update();
+      }
+      function upgradeAutomate() {
+        oldprice = hiddencost;
+        buy(oldprice);
+        if (check == true) {
+          hiddencost = oldprice * 10;
+          tick = tick / 2;
+          update();
+        }
+      }
+      function upgradeMPC() {
+        oldprice = mpcprice;
+        buy(oldprice);
+        if (check == true) {
+          oldAmt = mpc;
+          mpcprice = oldprice + 2 * oldAmt;
+          mpc = oldAmt + 1 * multiplier;
+          update();
+        }
+      }
+      function upgradeMPS() {
+        oldprice = mpsprice;
+        buy(oldprice);
+        if (check == true) {
+          oldAmt = mps;
+          mpsprice = oldprice + 4 * oldAmt;
+          mps = oldAmt + 1 * multiplier;
+          update();
+        }
+        timeupdate();
+      }
+      function rebirth() {
+        oldprice = rebirthcost;
+        buy(oldprice);
+        if (check == true) {
+          oldAmt = rebirthcount;
+          rebirthcost = oldprice + 1000000 * oldAmt * multiplier;
+          rebirthcount = oldAmt + 1;
+          multiplier = multiplier + 4;
+          mpcprice = 1;
+          mpsprice = 10;
+          mps = 0;
+          mpc = 1;
+          balance = 0;
+          update();
+        }
+      }
+      function save() {
+        localStorage.setItem("balance", balance);
+        localStorage.setItem("mpc", mpc);
+        localStorage.setItem("mps", mps);
+        localStorage.setItem("mpcp", mpcprice);
+        localStorage.setItem("mpsp", mpsprice);
+        localStorage.setItem("rebirthcost", rebirthcost);
+        localStorage.setItem("rebirthcount", rebirthcount);
+        localStorage.setItem("multiplier", multiplier);
+      }
+      function loadsave() {
+        if (localStorage.getItem("balance") == null) {
+          resetGame();
+        } else {
+          balance = Number(localStorage.getItem("balance"));
+          mpc = Number(localStorage.getItem("mpc"));
+          mps = Number(localStorage.getItem("mps"));
+          mpcprice = Number(localStorage.getItem("mpcp"));
+          mpsprice = Number(localStorage.getItem("mpsp"));
+          rebirthcost = Number(localStorage.getItem("rebirthcost"));
+          rebirthcount = Number(localStorage.getItem("rebirthcount"));
+          multiplier = Number(localStorage.getItem("multiplier"));
+          update();
+        }
+      }
+      function upgradeTick() {
+        buy(tmp);
+        if (check == true) {
+          tick = tick - 10;
+          tmp = tmp * 2;
+        }
+        timeupdate();
+        update();
+      }
+      function resetGame() {
+        localStorage.setItem("balance", 0);
+        localStorage.setItem("mpc", 1);
+        localStorage.setItem("mps", 0);
+        localStorage.setItem("mpcp", 5);
+        localStorage.setItem("mpsp", 10);
+        localStorage.setItem("rebirthcost", 1000000);
+        localStorage.setItem("rebirthcount", 0);
+        localStorage.setItem("multiplier", 1);
+        loadsave();
+        update();
+      }
+      function timeupdate() {
+        clearInterval(interval);
+        interval = setInterval(mpsmoney, tick);
+      }
+      function mpsmoney() {
+        balance = balance + mps;
+        save();
+        update();
+      }
+    </script>
+    <title>All The Money!</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body onload="loadup()">
+    <center>
+      <h1>All The Money!</h1>
+      <h1>you have: $<span id="money"></span></h1>
+      <button class="button, makemoney" onclick="makeMoney()">
+        Make Money!
+      </button>
+      <br />
+      <br />
+      <button class="button, buy" onclick="upgradeMPS()">
+        Upgrade money per second: $<span id="mpsprice"></span>
+      </button>
+      <br />
+      <button class="button, buy" onclick="upgradeMPC()">
+        Upgrade money per click: $<span id="mpcprice"></span>
+      </button>
+      <br />
+      <button class="button, buy" onclick="upgradeTick()">
+        <span id="hiddenupgrade"></span><span id="hiddencost"></span>
+      </button>
+      <br />
+      <br />
+      <button class="button, buy" onclick="rebirth()">
+        Rebirth: $<span id="rebirthcost"></span>
+      </button>
+      <br />
+      <br />
+      <br />
+      <br />
+      <h3 style="color: white; font-size: 18pt;">
+        (C) Copyright Maple Studios 2020, All Rights Reserved
+      </h3>
+      <div style="text-align: center; color: white;"></div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <button class="button, buy" onclick="resetGame()">
+        RESET GAME
+      </button>
+      <br />
+      <p>
+        Also, read the patch notes:
+      </p>
+      <a href="/patch-notes/all-the-money" target="_blank">
+        <button class="button, buy">
+          Patch Notes
+        </button>
+      </a>
+    </center>
+  </body>
+</html>
